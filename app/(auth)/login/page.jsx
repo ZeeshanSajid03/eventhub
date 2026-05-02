@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
@@ -8,7 +8,7 @@ import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 import Image from "next/image";
 
-export default function LoginPage() {
+function LoginForm() {
   const { login } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -55,10 +55,9 @@ export default function LoginPage() {
 
   return (
     <div className="w-full max-w-md">
-      {/* Card */}
       <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
-        {/* Logo */}
         <div className="text-center mb-8">
+
           <div className="w-12 h-12 flex items-center justify-center mx-auto mb-3">
             <Image
               src="/logo.png"
@@ -74,14 +73,12 @@ export default function LoginPage() {
           </p>
         </div>
 
-        {/* Server error */}
         {serverError && (
           <div className="mb-4 px-4 py-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-600">
             {serverError}
           </div>
         )}
 
-        {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
           <Input
             label="Email"
@@ -104,27 +101,37 @@ export default function LoginPage() {
             required
           />
 
-          <Button
-            type="submit"
-            fullWidth
-            loading={loading}
-            className="mt-2"
-          >
+          <Button type="submit" fullWidth loading={loading} className="mt-2">
             Sign In
           </Button>
         </form>
 
-        {/* Footer */}
         <p className="text-center text-sm text-gray-500 mt-6">
           Don't have an account?{" "}
-          <Link
-            href="/register"
-            className="text-blue-600 font-medium hover:underline"
-          >
+          <Link href="/register" className="text-blue-600 font-medium hover:underline">
             Sign up
           </Link>
         </p>
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={
+      <div className="w-full max-w-md">
+        <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100 animate-pulse">
+          <div className="h-8 bg-gray-200 rounded w-1/2 mx-auto mb-8" />
+          <div className="space-y-4">
+            <div className="h-10 bg-gray-200 rounded" />
+            <div className="h-10 bg-gray-200 rounded" />
+            <div className="h-10 bg-gray-200 rounded" />
+          </div>
+        </div>
+      </div>
+    }>
+      <LoginForm />
+    </Suspense>
   );
 }
